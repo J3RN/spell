@@ -1,5 +1,3 @@
-require "pry"
-
 class Spell
   def initialize
     @words = File.read("words").split("\n")
