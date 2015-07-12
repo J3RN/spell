@@ -1,6 +1,6 @@
 class Spell
   def initialize
-    @words = File.read("words").split("\n")
+    @words = File.read("words").split("\n").map {|x| x.downcase}
   end
 
   def num_matching(one_bigrams, two_bigrams, acc = 0)
@@ -43,8 +43,8 @@ class Spell
   def best_match(word)
     word_hash = Hash.new {|hash, key| hash[key] = compare(word, key)}
 
-    @words.each do |word|
-      word_hash[word]
+    @words.each do |dict_word|
+      word_hash[dict_word]
     end
 
     word_hash.sort_by {|key, value| value}.last.first
