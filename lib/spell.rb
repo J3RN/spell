@@ -1,21 +1,12 @@
-require "redis"
+require_relative "persistent_hash"
 
 class Spell
-  def initialize(key = "words", alpha = 0.3, redis_opts = {})
-    # Create connection to redis
-    @redis = Redis.new(redis_opts)
-
+  def initialize(alpha = 0.3, redis_key = "words", redis_opts = {})
     # Set instance vars
-    @key = key
     @alpha = alpha
 
-    # Load words from file into Redis
-    File.read("words").split("\n").each do |word|
-      @redis.hsetnx(@key, word.downcase, 0)
-    end
-
-    # Store word hash in memory, update from Redis
-    @words = @redis.hgetall(@key).map { |word, count| [word, count.to_i] }.to_h
+    # Use a Redis-persisted word list
+    @word_list = PersistentHash.new(redis_key, redis_opts)
   end
 
   # Returns the number of matching bigrams between the two sets of bigrams
@@ -49,16 +40,14 @@ class Spell
     bigrams
   end
 
-  # Returns the weight of this word
+  # Returns a value from 0 to @alpha for how often this word is used
   def weight(word)
-    max_val = @redis.hvals(@key).map { |x| x.to_i }.sort.last.to_f
-    @redis.hget(@key, word).to_f * (@alpha / max_val)
+    max_count = @word_list.values.sort.last
+    @word_list[word].to_f * (@alpha / max_count.to_f)
   end
 
-  # Returns the ratio of matching bigrams to the maximum possible bigrams
+  # Returns a value from 0 to 1 for how likely these two words are to be a match
   def compare(given_word, dict_word)
-    puts "Comparing #{given_word} to #{dict_word}"
-
     word1_bigrams = bigramate(given_word)
     word2_bigrams = bigramate(dict_word)
 
@@ -69,25 +58,21 @@ class Spell
     (bigram_score + weight(dict_word)) / (1.0 + @alpha)
   end
 
+
   # Returns the closest matching word in the dictionary
   def best_match(word)
-    # Get words from Redis
-    words = @redis.hkeys(@key)
-
-    # Determine weight for this word
-    word_weight = @redis.hget(@key, word) * (@alpha / @max_count)
-
-    word_hash = words.map { |key| [key, compare(word, key) + word_weight] }.to_h
+    words = @word_list.keys
+    word_hash = words.map { |key| [key, compare(word, key)] }.to_h
     word_hash.sort_by { |key, value| value }.last.first
   end
 
   # Returns a boolean for whether or not 'word' is in the dictionary
   def spelled_good?(word)
-    @redis.hkeys(@key).include?(word)
+    @word_list.keys.include?(word)
   end
 
   # Increment count on each utterance
   def add_count(word)
-    @redis.hincrby(@key, word, 1)
+    @word_list[word] += 1
   end
 end
