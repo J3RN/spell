@@ -3,7 +3,7 @@ require_relative "spell"
 
 $spell = Spell.new
 
-bot = Cinch::Bot.new do
+$bot = Cinch::Bot.new do
   configure do |c|
     c.nick = "spelltesttest"
     c.server = "irc.freenode.net"
@@ -34,5 +34,3 @@ bot = Cinch::Bot.new do
     end
   end
 end
-
-bot.start
