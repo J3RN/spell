@@ -1,7 +1,9 @@
 require "cinch"
 require_relative "spell"
 
-bot = Cinch::Bot.new do
+$spell = Spell.new
+
+$bot = Cinch::Bot.new do
   configure do |c|
     c.nick = "spelltesttest"
     c.server = "irc.freenode.net"
@@ -9,17 +11,12 @@ bot = Cinch::Bot.new do
   end
 
   on :message, /^spell: (.+)/ do |m, sentence|
-    spell = Spell.new
-
     correction_count =  0
     sentence.split(/\s/).each do |given_word|
       word = given_word.match(/[\p{L}']+/).to_s.downcase
 
-      debug "Word: #{word}"
-      debug "Spelled good? #{spell.spelled_good? word}"
-
-      if !spell.spelled_good? word
-        m.reply "#{word} is spelled wrong. Did you mean #{spell.best_match(word)}"
+      if !$spell.spelled_good? word
+        m.reply "'#{word}' is spelled wrong. Did you mean '#{$spell.best_match(word)}'?"
         correction_count += 1
       end
     end
@@ -28,6 +25,12 @@ bot = Cinch::Bot.new do
       m.reply "Looks good to me!"
     end
   end
-end
 
-bot.start
+  on :message, /(.*)/ do |m, sentence|
+    sentence.split(/\s/).each do |given_word|
+      word = given_word.match(/[\p{L}']+/).to_s.downcase
+
+      $spell.add_count(word) if $spell.spelled_good? word
+    end
+  end
+end
