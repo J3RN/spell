@@ -5,9 +5,12 @@ $spell = Spell.new
 
 $bot = Cinch::Bot.new do
   configure do |c|
-    c.nick = "spelltesttest"
-    c.server = "irc.freenode.net"
-    c.channels = ["#bottest"]
+    config = JSON.parse(File.read("settings.json"))
+
+    c.nick =      config["nick"]
+    c.password =  config["password"]
+    c.server =    config["server"]
+    c.channels =  config["channels"]
   end
 
   on :message, /^spell: (.+)/ do |m, sentence|

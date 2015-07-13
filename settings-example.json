@@ -1,0 +1,6 @@
+{
+  "nick": "spelltesttest",
+  "password": "",
+  "server": "irc.freenode.net",
+  "channels": ["#bottest"]
+}

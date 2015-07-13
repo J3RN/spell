@@ -3,3 +3,6 @@ misspellings.txt
 
 # Redis db
 *.rdb
+
+# Personal settings
+settings.json

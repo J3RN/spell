@@ -1,3 +1,4 @@
+require "json"
 require_relative "persistent_hash"
 
 class Spell
