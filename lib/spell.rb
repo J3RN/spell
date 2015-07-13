@@ -1,4 +1,3 @@
-require "method_profiler"
 require_relative "persistent_hash"
 
 class Spell

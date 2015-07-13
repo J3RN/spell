@@ -1,4 +1,3 @@
-require "method_profiler"
 require_relative "spell"
 
 module SpellTest
@@ -22,14 +21,8 @@ module SpellTest
     end
 
     def speed_test
-      persisent_profiler = MethodProfiler.observe(PersistentHash)
-      spell_profiler = MethodProfiler.observe(Spell)
-
       spell = Spell.new
-      spell.best_match("aligator")
-
-      puts persisent_profiler.report
-      puts spell_profiler.report
+      puts "aligator->#{spell.best_match('aligator')}"
     end
   end
 end
