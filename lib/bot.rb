@@ -16,7 +16,7 @@ $bot = Cinch::Bot.new do
       word = given_word.match(/[\p{L}']+/).to_s.downcase
 
       if !$spell.spelled_good? word
-        m.reply "#{word} is spelled wrong. Did you mean #{$spell.best_match(word)}?"
+        m.reply "'#{word}' is spelled wrong. Did you mean '#{$spell.best_match(word)}'?"
         correction_count += 1
       end
     end
