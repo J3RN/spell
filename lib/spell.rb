@@ -1,3 +1,4 @@
+require "method_profiler"
 require_relative "persistent_hash"
 
 class Spell
@@ -40,29 +41,31 @@ class Spell
     bigrams
   end
 
-  # Returns a value from 0 to @alpha for how often this word is used
-  def weight(word)
-    max_count = @word_list.values.sort.last
-    @word_list[word].to_f * (@alpha / max_count.to_f)
-  end
-
   # Returns a value from 0 to 1 for how likely these two words are to be a match
   def compare(given_word, dict_word)
     word1_bigrams = bigramate(given_word)
     word2_bigrams = bigramate(dict_word)
 
     most_bigrams = [word1_bigrams.count, word2_bigrams.count].sort.last
-    bigram_score = num_matching(word1_bigrams, word2_bigrams).to_f / most_bigrams
-
-    # Return the score, with weighted by popularity
-    (bigram_score + weight(dict_word)) / (1.0 + @alpha)
+    num_matching(word1_bigrams, word2_bigrams).to_f / most_bigrams
   end
 
+  # Applies the usage weight to each word's score
+  def apply_weights(word_hash, max)
+    array_array = word_hash.map do |word, value|
+      [word, value + (@word_list[word].to_f * (@alpha / max))]
+    end
+
+    array_array.to_h
+  end
 
   # Returns the closest matching word in the dictionary
   def best_match(word)
-    words = @word_list.keys
+    length_range = (word.length - 2..word.length + 2)
+
+    words = @word_list.keys.select { |dict_word| length_range.include? dict_word.length }
     word_hash = words.map { |key| [key, compare(word, key)] }.to_h
+    word_hash = apply_weights(word_hash, @word_list.values.sort.last.to_f)
     word_hash.sort_by { |key, value| value }.last.first
   end
 

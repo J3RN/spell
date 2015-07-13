@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+# Simply bundle
+`bundle install`
+
+require "redis"
+
+redis = Redis.new
+
+# Add words from /usr/share/dict/words
+flat_set = File.read("/usr/share/dict/words").split(/\n/).map { |x| [x, 0] }.flatten
+redis.hmset("words", *flat_set)
