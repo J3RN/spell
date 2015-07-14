@@ -1,5 +1,6 @@
 {
   "nick": "spelltesttest",
+  "master": "J3RN",
   "password": "",
   "server": "irc.freenode.net",
   "channels": ["#bottest"]
