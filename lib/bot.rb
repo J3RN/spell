@@ -19,7 +19,6 @@ $bot = Cinch::Bot.new do
 
   on :message, /^spell: (.+)/ do |m, sentence|
     new_sentence = corrected_sentence(sentence)
-    debug new_sentence
 
     if new_sentence == sentence
       m.reply "Looks good to me!"
