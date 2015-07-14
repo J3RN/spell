@@ -43,10 +43,11 @@ class Spell
     num_matching(word1_bigrams, word2_bigrams).to_f / most_bigrams
   end
 
-  # Applies the usage weight to each word's score
+  # For each word, adjust it's score by usage
+  # Each score is in the range (0.0..1.0)
   def apply_weights(word_hash, max)
     array_array = word_hash.map do |word, value|
-      [word, value + (@word_list[word].to_f * (@alpha / max))]
+      [word, (value * (1 - @alpha)) + (@alpha * (@word_list[word].to_f / max))]
     end
 
     array_array.to_h
