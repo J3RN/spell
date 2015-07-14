@@ -18,25 +18,20 @@ $bot = Cinch::Bot.new do
   end
 
   on :message, /^spell: (.+)/ do |m, sentence|
-    correction_count =  0
-    sentence.split(/\s/).each do |given_word|
-      word = given_word.match(/[\p{L}']+/).to_s.downcase
+    new_sentence = corrected_sentence(sentence)
+    debug new_sentence
 
-      if !$spell.spelled_good? word
-        m.reply "'#{word}' is spelled wrong. Did you mean '#{$spell.best_match(word)}'?"
-        correction_count += 1
-      end
-    end
-
-    if correction_count == 0
+    if new_sentence == sentence
       m.reply "Looks good to me!"
+    else
+      m.reply "#{m.user.nick} meant to say \"#{new_sentence}\""
     end
   end
 
   on :message, /^!!top(\d)/ do |m, num_top|
-    words_counts = $word_list.sort_by {|word, count| count }.last(num_top.to_i)
+    words_counts = $word_list.sort_by { |_, count| count }.last(num_top.to_i)
     words_counts.reverse!
-    m.reply(words_counts.map {|set| "#{set.first}: #{set.last}"}.join(", "))
+    m.reply(words_counts.map { |set| "#{set.first}: #{set.last}" }.join(", "))
   end
 
   on :message, /^!!join (.*)/ do |m, channel_name|
@@ -98,12 +93,10 @@ $bot = Cinch::Bot.new do
 
   on :message, /(.*)/ do |m, sentence|
     if @annoying_mode
-      sentence.split(/\s/).each do |given_word|
-        word = given_word.match(/[\p{L}']+/).to_s.downcase
+      new_sentence = corrected_sentence(sentence)
 
-        if !$spell.spelled_good? word
-          m.reply "'#{word}' is spelled wrong. Did you mean '#{$spell.best_match(word)}'?"
-        end
+      if new_sentence != sentence
+        m.reply "#{m.user.nick} meant to say \"#{new_sentence}\""
       end
     end
 
@@ -111,6 +104,22 @@ $bot = Cinch::Bot.new do
       word = given_word.match(/[\p{L}']+/).to_s.downcase
 
       $spell.add_count(word) if $spell.spelled_good? word
+    end
+  end
+
+  helpers do
+    def corrected_sentence(sentence)
+      new_sentence = sentence.clone
+
+      sentence.split(/\s/).each do |given_word|
+        word = given_word.match(/[\p{L}']+/).to_s.downcase
+
+        unless $spell.spelled_good? word
+          new_sentence.sub!(word, $spell.best_match(word))
+        end
+      end
+
+      new_sentence
     end
   end
 end
