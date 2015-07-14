@@ -8,5 +8,7 @@ require "redis"
 redis = Redis.new
 
 # Add words from /usr/share/dict/words
-flat_set = File.read("/usr/share/dict/words").split(/\n/).map { |x| [x, 0] }.flatten
+all_words = File.read("/usr/share/dict/words").split(/\n/)
+non_letter_words = all_words.select! { |word| word.length > 1 }
+flat_set = non_letter_words.map { |x| [x, 0] }.flatten
 redis.hmset("words", *flat_set)
