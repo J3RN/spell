@@ -92,7 +92,7 @@ $bot = Cinch::Bot.new do
       $word_list[word] = 0
       m.reply "Learned #{word}"
     else
-      m.reply "How about you learn some vocabulary, eh?"
+      m.reply "How about *you* learn some vocabulary, eh?"
     end
   end
 
