@@ -109,17 +109,17 @@ $bot = Cinch::Bot.new do
 
   helpers do
     def corrected_sentence(sentence)
-      new_sentence = sentence.clone
+      raw_new = sentence.split(/\s/).map do |given_word|
+        trimmed_word = given_word.match(/[\p{L}']+/).to_s.downcase
 
-      sentence.split(/\s/).each do |given_word|
-        word = given_word.match(/[\p{L}']+/).to_s.downcase
-
-        unless $spell.spelled_good? word
-          new_sentence.sub!(word, $spell.best_match(word))
+        if $spell.spelled_good? trimmed_word
+          given_word
+        else
+          $spell.best_match(trimmed_word)
         end
       end
 
-      new_sentence
+      raw_new.join(" ")
     end
   end
 end
