@@ -1,13 +1,10 @@
 require "json"
-require_relative "persistent_hash"
 
 class Spell
-  def initialize(alpha = 0.3, redis_key = "words", redis_opts = {})
+  def initialize(alpha = 0.3, word_list)
     # Set instance vars
     @alpha = alpha
-
-    # Use a Redis-persisted word list
-    @word_list = PersistentHash.new(redis_key, redis_opts)
+    @word_list = word_list
   end
 
   # Returns the number of matching bigrams between the two sets of bigrams

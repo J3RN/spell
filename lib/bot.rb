@@ -1,7 +1,9 @@
 require "cinch"
 require_relative "spell"
+require_relative "persistent_hash"
 
-$spell = Spell.new
+$word_list = PersistentHash.new
+$spell = Spell.new($word_list)
 
 $bot = Cinch::Bot.new do
   configure do |c|
