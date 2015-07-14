@@ -63,7 +63,7 @@ $bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^!!beannoying/ do |m|
+  on :message, /^!!annoying/ do |m|
     if m.user.nick == $master
       @annoying_mode = true
       m.reply "Now being annoying"
@@ -72,7 +72,7 @@ $bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^!!stopit/ do |m|
+  on :message, /^!!stop/ do |m|
     if m.user.nick == $master
       @annoying_mode = false
       m.reply "Alright, OK."
@@ -81,7 +81,7 @@ $bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^!!addword ([\p{L}']+)/ do |m, word|
+  on :message, /^!!add ([\p{L}']+)/ do |m, word|
     if m.user.nick == $master
       word = word.downcase
       $word_list[word] = 0
