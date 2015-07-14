@@ -31,11 +31,7 @@ class Spell
 
   # Returns an array of the word's bigrams (in order)
   def bigramate(word)
-    bigrams = []
-    for i in (0..(word.length - 2))
-      bigrams.push(word.slice(i, 2))
-    end
-    bigrams
+    (0..(word.length - 2)).map { |i| word.slice(i, 2) }
   end
 
   # Returns a value from 0 to 1 for how likely these two words are to be a match
