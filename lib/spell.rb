@@ -44,13 +44,16 @@ class Spell
   end
 
   # For each word, adjust it's score by usage
-  # Each score is in the range (0.0..1.0)
+  #
+  # v = s * (1 - a) + u * a
+  # Where v is the new value
+  # a is @alpha
+  # s is the bigram score (0..1)
+  # u is the usage score (0..1)
   def apply_weights(word_hash, max)
-    array_array = word_hash.map do |word, value|
-      [word, (value * (1 - @alpha)) + (@alpha * (@word_list[word].to_f / max))]
+    word_hash.clone.each_pair do |word, bigram_score|
+      word_hash[word] = (bigram_score * (1 - @alpha)) + ((@word_list[word].to_f / max) * @alpha)
     end
-
-    array_array.to_h
   end
 
   # Returns the closest matching word in the dictionary
