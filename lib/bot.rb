@@ -31,6 +31,12 @@ $bot = Cinch::Bot.new do
     end
   end
 
+  on :message, /^top(\d)/ do |m, num_top|
+    words_counts = $word_list.sort_by {|word, count| count }.last(num_top.to_i)
+    words_counts.reverse!
+    m.reply(words_counts.map {|set| "#{set.first}: #{set.last}"}.join(", "))
+  end
+
   on :message, /(.*)/ do |m, sentence|
     sentence.split(/\s/).each do |given_word|
       word = given_word.match(/[\p{L}']+/).to_s.downcase
