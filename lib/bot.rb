@@ -73,7 +73,26 @@ $bot = Cinch::Bot.new do
       @annoying_mode = true
       m.reply "Now being annoying"
     else
-      m.reply "How about you *stop* being annoying, eh?"
+      m.reply "How about you shut up?"
+    end
+  end
+
+  on :message, /^!!stopit/ do |m|
+    if m.user.nick == $master
+      @annoying_mode = false
+      m.reply "Alright, OK."
+    else
+      m.reply "How about you stop being annoying, eh?"
+    end
+  end
+
+  on :message, /^!!addword ([\p{L}']+)/ do |m, word|
+    if m.user.nick == $master
+      word = word.downcase
+      $word_list[word] = 0
+      m.reply "Learned #{word}"
+    else
+      m.reply "How about you learn some vocabulary, eh?"
     end
   end
 
