@@ -68,7 +68,26 @@ $bot = Cinch::Bot.new do
     end
   end
 
+  on :message, /^!!beannoying/ do |m|
+    if m.user.nick == $master
+      @annoying_mode = true
+      m.reply "Now being annoying"
+    else
+      m.reply "How about you *stop* being annoying, eh?"
+    end
+  end
+
   on :message, /(.*)/ do |m, sentence|
+    if @annoying_mode
+      sentence.split(/\s/).each do |given_word|
+        word = given_word.match(/[\p{L}']+/).to_s.downcase
+
+        if !$spell.spelled_good? word
+          m.reply "'#{word}' is spelled wrong. Did you mean '#{$spell.best_match(word)}'?"
+        end
+      end
+    end
+
     sentence.split(/\s/).each do |given_word|
       word = given_word.match(/[\p{L}']+/).to_s.downcase
 
