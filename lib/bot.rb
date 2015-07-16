@@ -18,7 +18,7 @@ $bot = Cinch::Bot.new do
   end
 
   on :message, /^spell: (.+)/ do |m, sentence|
-    new_sentence = corrected_sentence(sentence)
+    new_sentence = corrected_sentence(sentence, get_nicks(m))
 
     if new_sentence == sentence
       m.reply "Looks good to me!"
@@ -92,7 +92,7 @@ $bot = Cinch::Bot.new do
 
   on :message, /(.*)/ do |m, sentence|
     if @annoying_mode
-      new_sentence = corrected_sentence(sentence)
+      new_sentence = corrected_sentence(sentence, get_nicks(m))
 
       if new_sentence != sentence
         m.reply "#{m.user.nick} meant to say \"#{new_sentence}\""
@@ -107,11 +107,17 @@ $bot = Cinch::Bot.new do
   end
 
   helpers do
-    def corrected_sentence(sentence)
+
+    def get_nicks(message)
+      message.channel.users.keys.map { |user| user.nick }
+    end
+
+    def corrected_sentence(sentence, nicks)
       raw_new = sentence.split(/\s/).map do |given_word|
         trimmed_word = given_word.match(/[\p{L}']+/).to_s.downcase
 
-        if trimmed_word == "" or $spell.spelled_good? trimmed_word
+        if trimmed_word == "" or $spell.spelled_good? trimmed_word or
+          nicks.include? trimmed_word
           given_word
         else
           $spell.best_match(trimmed_word)
