@@ -109,7 +109,11 @@ $bot = Cinch::Bot.new do
   helpers do
 
     def get_nicks(message)
-      message.channel.users.keys.map { |user| user.nick }
+      if message.channel?
+        message.channel.users.keys.map { |user| user.nick }
+      else
+        [ m.user.nick ]
+      end
     end
 
     def corrected_sentence(sentence, nicks)
