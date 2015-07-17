@@ -112,7 +112,7 @@ $bot = Cinch::Bot.new do
       if message.channel?
         message.channel.users.keys.map { |user| user.nick }
       else
-        [ m.user.nick ]
+        [ message.user.nick ]
       end
     end
 
