@@ -83,11 +83,21 @@ $bot = Cinch::Bot.new do
   on :message, /^!!add ([\p{L}']+)/ do |m, word|
     if m.user.nick == $master
       word = word.downcase
-      $word_list[word] = 0
-      m.reply "Learned #{word}"
+      if $word_list[word]
+        m.reply "I already know #{word}!"
+      else
+        $word_list[word] = 0
+        m.reply "Learned #{word}"
+      end
     else
       m.reply "How about *you* learn some vocabulary, eh?"
     end
+  end
+
+  on :message, /^!!count ([\p{L}']+)/ do |m, word|
+    word = word.downcase
+    count = $word_list[word] || 0
+    m.reply "#{word} has been said #{count} times"
   end
 
   on :message, /(.*)/ do |m, sentence|
