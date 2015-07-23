@@ -20,7 +20,7 @@ $bot = Cinch::Bot.new do
   on :message, /^spell: (.+)/ do |m, sentence|
     new_sentence = corrected_sentence(sentence, get_nicks(m))
 
-    if new_sentence == sentence
+    if new_sentence == sentence.strip
       m.reply "Looks good to me!"
     else
       m.reply "#{m.user.nick} meant to say \"#{new_sentence}\""
@@ -104,7 +104,7 @@ $bot = Cinch::Bot.new do
     if @annoying_mode
       new_sentence = corrected_sentence(sentence, get_nicks(m))
 
-      if new_sentence != sentence
+      if new_sentence != sentence.strip
         m.reply "#{m.user.nick} meant to say \"#{new_sentence}\""
       end
     end
