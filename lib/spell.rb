@@ -58,9 +58,7 @@ class Spell
 
   # Returns the closest matching word in the dictionary
   def best_match(word)
-    length_range = (word.length - 2..word.length + 2)
-
-    words = @word_list.keys.select { |dict_word| length_range.include? dict_word.length }
+    words = @word_list.keys
     word_hash = words.map { |key| [key, compare(word, key)] }.to_h
     word_hash = apply_weights(word_hash, @word_list.values.sort.last.to_f)
     word_hash.sort_by { |key, value| value }.last.first
