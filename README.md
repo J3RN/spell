@@ -22,6 +22,24 @@ And spell will obediently reply:
 - `!!stop`: Disable annoying mode. Spell will stop correcting everything said everywhere.
 - `!!join <channel>`: Spell will join that channel.
 - `!!part`: Spell will leave the current channel.
-- `!!add`: Adds a word to the dictionary
+- `!!add`: Adds a word to the dictionary.
 
-*I am not responsible for anything Spell says to a normal user trying to use a master command*
+*I am not responsible for anything Spell says to a normal user trying to use a master command.*
+
+## Setup
+
+First, you'll need to have a [Redis](http://redis.io) server running.
+
+After downloading a dictionary file (try [ENABLE](https://code.google.com/p/dotnetperls-controls/downloads/detail?name=enable1.txt)), and saving it in the directory as `words.txt`, run:
+
+```bash
+./bin/bootstrap
+```
+
+Next, you'll need specify some configuration. Look at `settings-example.json` for an example. You may simply copy `settings-example.json` to `settings.json`, and change the fields appropriately.
+
+Then, to start the bot, simply run:
+
+```bash
+./bin/start
+```
