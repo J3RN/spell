@@ -3,6 +3,7 @@ GEM
   specs:
     cinch (2.2.6)
     redis (3.2.1)
+    ruby-prof (0.15.8)
 
 PLATFORMS
   ruby
@@ -10,3 +11,7 @@ PLATFORMS
 DEPENDENCIES
   cinch
   redis
+  ruby-prof
+
+BUNDLED WITH
+   1.10.6
