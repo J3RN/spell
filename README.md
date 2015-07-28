@@ -43,3 +43,16 @@ Then, to start the bot, simply run:
 ```bash
 ./bin/start
 ```
+
+Also, if you'd like to play around with the underlying `Spell` class, I've added:
+
+```bash
+bin/console
+```
+
+Then you can use the provided `@spell` instance
+
+```
+irb(main)> @spell.best_match('aligator')
+=> "alligator"
+```

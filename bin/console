@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require "irb"
+require_relative "../lib/persistent_hash.rb"
+require_relative "../lib/spell.rb"
+
+@spell = Spell.new(PersistentHash.new)
+
+IRB.start
