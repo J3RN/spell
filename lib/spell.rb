@@ -9,9 +9,7 @@ class Spell
 
   # Returns the number of matching bigrams between the two sets of bigrams
   def num_matching(one_bigrams, two_bigrams, acc = 0)
-    if one_bigrams.length == 0 || two_bigrams.length == 0
-      return acc
-    end
+    return acc if (one_bigrams.length == 0 || two_bigrams.length == 0)
 
     one_two = one_bigrams.index(two_bigrams.first)
     two_one = two_bigrams.index(one_bigrams.first)
@@ -50,17 +48,22 @@ class Spell
   # a is @alpha
   # s is the bigram score (0..1)
   # u is the usage score (0..1)
-  def apply_weights(word_hash, max)
-    word_hash.clone.each_pair do |word, bigram_score|
-      word_hash[word] = (bigram_score * (1 - @alpha)) + ((@word_list[word].to_f / max) * @alpha)
+  def apply_weights(word_hash)
+    max_usage = @word_list.values.sort.last.to_f
+
+    weighted_array = word_hash.map do |word, bigram_score|
+      usage_score = @word_list[word].to_f / max_usage
+      [word, (bigram_score * (1 - @alpha)) + (usage_score * @alpha)]
     end
+
+    weighted_array.to_h
   end
 
   # Returns the closest matching word in the dictionary
   def best_match(word)
     words = @word_list.keys
     word_hash = words.map { |key| [key, compare(word, key)] }.to_h
-    word_hash = apply_weights(word_hash, @word_list.values.sort.last.to_f)
+    word_hash = apply_weights(word_hash)
     word_hash.sort_by { |key, value| value }.last.first
   end
 
