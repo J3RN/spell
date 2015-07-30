@@ -17,12 +17,10 @@ class Spell
     if (one_two.nil? && two_one.nil?)
       num_matching(one_bigrams.drop(1), two_bigrams.drop(1), acc)
     else
-      if (one_two != nil && (two_one.nil? ? true : one_two <= two_one))
+      if (one_two != nil && (two_one.nil? ? true : one_two < two_one))
         num_matching(one_bigrams.drop(one_two + 1), two_bigrams.drop(1), acc + 1)
-      elsif (two_one != nil && (one_two.nil? ? true : two_one < one_two))
+      else # (two_one != nil && (one_two.nil? ? true : two_one < one_two))
         num_matching(one_bigrams.drop(1), two_bigrams.drop(two_one + 1), acc + 1)
-      else
-        raise 'Impossible Error'
       end
     end
   end
