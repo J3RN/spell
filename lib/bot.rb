@@ -102,10 +102,12 @@ $bot = Cinch::Bot.new do
 
   on :message, /(.*)/ do |m, sentence|
     if @annoying_mode
-      new_sentence = corrected_sentence(sentence, get_nicks(m))
+      unless sentence.match(/^spell:/)
+        new_sentence = corrected_sentence(sentence, get_nicks(m))
 
-      if new_sentence != sentence.strip
-        m.reply "#{m.user.nick} meant to say \"#{new_sentence}\""
+        if new_sentence != sentence.strip
+          m.reply "#{m.user.nick} meant to say \"#{new_sentence}\""
+        end
       end
     end
 
