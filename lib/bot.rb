@@ -102,10 +102,12 @@ $bot = Cinch::Bot.new do
 
   on :message, /(.*)/ do |m, sentence|
     if @annoying_mode
-      new_sentence = corrected_sentence(sentence, get_nicks(m))
+      unless sentence.match(/^spell:/)
+        new_sentence = corrected_sentence(sentence, get_nicks(m))
 
-      if new_sentence != sentence.strip
-        m.reply "#{m.user.nick} meant to say \"#{new_sentence}\""
+        if new_sentence != sentence.strip
+          m.reply "#{m.user.nick} meant to say \"#{new_sentence}\""
+        end
       end
     end
 
@@ -131,7 +133,7 @@ $bot = Cinch::Bot.new do
         trimmed_word = given_word.match(/[\p{L}']+/).to_s.downcase
 
         if trimmed_word == "" or $spell.spelled_good? trimmed_word or
-          nicks.include? trimmed_word
+          nicks.map(&:downcase).include? trimmed_word
           given_word
         else
           $spell.best_match(trimmed_word)
