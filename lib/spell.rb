@@ -31,10 +31,7 @@ class Spell
   end
 
   # Returns a value from 0 to 1 for how likely these two words are to be a match
-  def compare(given_word, dict_word)
-    word1_bigrams = bigramate(given_word)
-    word2_bigrams = bigramate(dict_word)
-
+  def compare(word1_bigrams, word2_bigrams)
     most_bigrams = [word1_bigrams.count, word2_bigrams.count].sort.last
     num_matching(word1_bigrams, word2_bigrams).to_f / most_bigrams
   end
@@ -60,7 +57,10 @@ class Spell
   # Returns the closest matching word in the dictionary
   def best_match(word)
     words = @word_list.keys
-    word_hash = words.map { |key| [key, compare(word, key)] }.to_h
+    word_bigrams = bigramate(word)
+    word_hash = words.map do |key|
+      [key, compare(word_bigrams, bigramate(key))]
+    end.to_h
     word_hash = apply_weights(word_hash)
     word_hash.sort_by { |key, value| value }.last.first
   end
