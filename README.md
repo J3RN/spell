@@ -22,7 +22,7 @@ And spell will obediently reply:
 - `!!stop`: Disable annoying mode. Spell will stop correcting everything said everywhere.
 - `!!join <channel>`: Spell will join that channel.
 - `!!part`: Spell will leave the current channel.
-- `!!add`: Adds a word to the dictionary.
+- `!!add <word1 word2 ...>`: Adds the given words to the dictionary.
 
 *I am not responsible for anything Spell says to a normal user trying to use a master command.*
 

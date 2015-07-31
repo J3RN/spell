@@ -81,14 +81,15 @@ $bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^!!add ([\p{L}']+)/ do |m, word|
+  on :message, /^!!add ((?:[\p{L}']+\s?)+)/ do |m, words|
     if master? m.user
-      word = word.downcase
-      if $word_list[word]
-        m.reply "I already know #{word}!"
-      else
-        $word_list[word] = 0
-        m.reply "Learned #{word}"
+      words.split(/\s/).map(&:downcase).each do |word|
+        if $word_list[word]
+          m.reply "I already know #{word}!"
+        else
+          $word_list[word] = 0
+          m.reply "Learned #{word}"
+        end
       end
     else
       m.reply "How about *you* learn some vocabulary, eh?"
