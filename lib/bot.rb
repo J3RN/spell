@@ -9,7 +9,9 @@ $bot = Cinch::Bot.new do
   configure do |c|
     config = JSON.parse(File.read("settings.json"))
 
-    $master = config["master"]
+    fail "Upgrade to the new 'masters' format" if config["master"]
+
+    $masters = config["masters"].map { |x| x.downcase }
 
     c.nick =      config["nick"]
     c.password =  config["password"]
@@ -36,8 +38,7 @@ $bot = Cinch::Bot.new do
   on :message, /^!!join (.*)/ do |m, channel_name|
     channel_name = channel_name.strip
 
-    debug m.user.nick
-    if m.user.nick == $master
+    if master? m.user
       channel = m.bot.join(channel_name)
 
       if channel.nil?
@@ -51,7 +52,7 @@ $bot = Cinch::Bot.new do
   end
 
   on :message, /^!!part/ do |m|
-    if m.user.nick == $master
+    if master? m.user
       if m.channel?
         m.channel.part("Goodbye, friends")
       else
@@ -63,7 +64,7 @@ $bot = Cinch::Bot.new do
   end
 
   on :message, /^!!annoying/ do |m|
-    if m.user.nick == $master
+    if master? m.user
       @annoying_mode = true
       m.reply "Now being annoying"
     else
@@ -72,7 +73,7 @@ $bot = Cinch::Bot.new do
   end
 
   on :message, /^!!stop/ do |m|
-    if m.user.nick == $master
+    if master? m.user
       @annoying_mode = false
       m.reply "Alright, OK."
     else
@@ -81,7 +82,7 @@ $bot = Cinch::Bot.new do
   end
 
   on :message, /^!!add ([\p{L}']+)/ do |m, word|
-    if m.user.nick == $master
+    if master? m.user
       word = word.downcase
       if $word_list[word]
         m.reply "I already know #{word}!"
@@ -119,6 +120,10 @@ $bot = Cinch::Bot.new do
   end
 
   helpers do
+
+    def master?(user)
+      $masters.include? user.nick.downcase
+    end
 
     def get_nicks(message)
       if message.channel?
