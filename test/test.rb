@@ -6,8 +6,13 @@ word_list = PersistentHash.new
 spell = Spell.new(nil, word_list)
 
 result = RubyProf.profile do
-  spell.best_match('aligator')
+  fail 'Mismatch' unless spell.best_match('alligator') == 'alligator'
 end
 
-printer = RubyProf::FlatPrinter.new(result)
-printer.print(STDOUT, sort_method: :total_time)
+Dir.mkdir('profiling') unless File.exist? 'profiling'
+
+printer = RubyProf::GraphHtmlPrinter.new(result)
+printer.print(File.new("profiling/#{Time.now.to_i}-graph.html", 'w+'))
+
+printer = RubyProf::CallStackPrinter.new(result)
+printer.print(File.new("profiling/#{Time.now.to_i}-output.html", 'w+'))

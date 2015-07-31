@@ -6,3 +6,6 @@ misspellings.txt
 
 # Personal settings
 settings.json
+
+# Profiling output
+profiling
