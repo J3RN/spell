@@ -133,7 +133,7 @@ $bot = Cinch::Bot.new do
         trimmed_word = given_word.match(/[\p{L}']+/).to_s.downcase
 
         if trimmed_word == "" or $spell.spelled_good? trimmed_word or
-          nicks.include? trimmed_word
+          nicks.map(&:downcase).include? trimmed_word
           given_word
         else
           $spell.best_match(trimmed_word)
