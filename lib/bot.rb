@@ -138,7 +138,8 @@ $bot = Cinch::Bot.new do
       raw_new = sentence.split(/\s/).map do |given_word|
         trimmed_word = given_word.match(/[\p{L}']+/).to_s.downcase
 
-        if trimmed_word == "" or $spell.spelled_good? trimmed_word or
+        if trimmed_word.length < 2 or
+          $spell.spelled_good? trimmed_word or
           nicks.map(&:downcase).include? trimmed_word
           given_word
         else

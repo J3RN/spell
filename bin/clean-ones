@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require 'redis'
+
+redis = Redis.new
+
+bad_words = redis.hgetall("words").keys.select { |word| word.length == 1 }
+print "Clearing #{bad_words.count} one-letter words..."
+bad_words.each { |bad_word| redis.hdel("words", bad_word) }
+puts "Done."
