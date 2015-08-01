@@ -6,7 +6,7 @@ word_list = PersistentHash.new
 spell = Spell.new(nil, word_list)
 
 result = RubyProf.profile do
-  fail 'Mismatch' unless spell.best_match('alligator') == 'alligator'
+  puts spell.best_match('alligator')
 end
 
 Dir.mkdir('profiling') unless File.exist? 'profiling'
