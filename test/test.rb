@@ -13,6 +13,3 @@ Dir.mkdir('profiling') unless File.exist? 'profiling'
 
 printer = RubyProf::GraphHtmlPrinter.new(result)
 printer.print(File.new("profiling/#{Time.now.to_i}-graph.html", 'w+'))
-
-printer = RubyProf::CallStackPrinter.new(result)
-printer.print(File.new("profiling/#{Time.now.to_i}-output.html", 'w+'))
