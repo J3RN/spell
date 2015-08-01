@@ -9,18 +9,18 @@ class Spell
 
   # Returns the number of matching bigrams between the two sets of bigrams
   def num_matching(one_bigrams, two_bigrams, acc = 0)
-    return acc if (one_bigrams.length == 0 || two_bigrams.length == 0)
+    return acc if (one_bigrams.empty? || two_bigrams.empty?)
 
-    one_two = one_bigrams.index(two_bigrams.first)
-    two_one = two_bigrams.index(one_bigrams.first)
+    one_two = one_bigrams.index(two_bigrams[0])
+    two_one = two_bigrams.index(one_bigrams[0])
 
     if (one_two.nil? && two_one.nil?)
-      num_matching(one_bigrams.drop(1), two_bigrams.drop(1), acc)
+      num_matching(one_bigrams.slice(1..-1), two_bigrams.slice(1..-1), acc)
     else
       if (one_two != nil && (two_one.nil? ? true : one_two < two_one))
-        num_matching(one_bigrams.drop(one_two + 1), two_bigrams.drop(1), acc + 1)
+        num_matching(one_bigrams.slice(one_two + 1..-1), two_bigrams.slice(1..-1), acc + 1)
       else # (two_one != nil && (one_two.nil? ? true : two_one < one_two))
-        num_matching(one_bigrams.drop(1), two_bigrams.drop(two_one + 1), acc + 1)
+        num_matching(one_bigrams.slice(1..-1), two_bigrams.slice(two_one + 1..-1), acc + 1)
       end
     end
   end
