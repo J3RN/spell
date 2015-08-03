@@ -36,7 +36,7 @@ class Spell
 
   # Returns a value from 0 to 1 for how likely these two words are to be a match
   def compare(word1_bigrams, word2_bigrams)
-    most_bigrams = [word1_bigrams.count, word2_bigrams.count].sort.last
+    most_bigrams = [word1_bigrams.count, word2_bigrams.count].max
     num_matching(word1_bigrams, word2_bigrams).to_f / most_bigrams
   end
 
@@ -48,7 +48,7 @@ class Spell
   # s is the bigram score (0..1)
   # u is the usage score (0..1)
   def apply_weights(word_hash)
-    max_usage = @word_list.values.sort.last.to_f
+    max_usage = @word_list.values.max.to_f
 
     weighted_array = word_hash.map do |word, bigram_score|
       usage_score = @word_list[word].to_f / max_usage
@@ -66,7 +66,7 @@ class Spell
       [key, compare(word_bigrams, bigramate(key))]
     end.to_h
     word_hash = apply_weights(word_hash)
-    word_hash.sort_by { |key, value| value }.last.first
+    word_hash.max_by { |key, value| value }.first
   end
 
   # Returns a boolean for whether or not 'word' is in the dictionary
