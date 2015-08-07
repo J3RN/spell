@@ -117,7 +117,7 @@ $bot = Cinch::Bot.new do
     sentence.split(/\s/).each do |given_word|
       word = given_word.match(/[\p{L}']+/).to_s.downcase
 
-      word_list[word] += 1 if $spell.spelled_correctly? word
+      $word_list[word] += 1 if $spell.spelled_correctly? word
     end
   end
 
