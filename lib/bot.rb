@@ -1,9 +1,10 @@
+require "json"
 require "cinch"
-require_relative "spell"
+require "spell"
 require_relative "persistent_hash"
 
 $word_list = PersistentHash.new
-$spell = Spell.new($word_list)
+$spell = Spell::Spell.new($word_list)
 
 $bot = Cinch::Bot.new do
   configure do |c|
@@ -116,7 +117,7 @@ $bot = Cinch::Bot.new do
     sentence.split(/\s/).each do |given_word|
       word = given_word.match(/[\p{L}']+/).to_s.downcase
 
-      $spell.add_count(word) if $spell.spelled_good? word
+      word_list[word] += 1 if $spell.spelled_correctly? word
     end
   end
 
@@ -139,7 +140,7 @@ $bot = Cinch::Bot.new do
         trimmed_word = given_word.match(/[\p{L}']+/).to_s.downcase
 
         if trimmed_word.length < 2 or
-          $spell.spelled_good? trimmed_word or
+          $spell.spelled_correctly? trimmed_word or
           nicks.map(&:downcase).include? trimmed_word
           given_word
         else

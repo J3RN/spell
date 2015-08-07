@@ -4,6 +4,7 @@ GEM
     cinch (2.2.6)
     redis (3.2.1)
     ruby-prof (0.15.8)
+    spell (1.0.0)
 
 PLATFORMS
   ruby
@@ -12,6 +13,7 @@ DEPENDENCIES
   cinch
   redis
   ruby-prof
+  spell
 
 BUNDLED WITH
    1.10.6
