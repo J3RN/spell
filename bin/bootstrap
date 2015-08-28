@@ -8,7 +8,7 @@ require "redis"
 redis = Redis.new
 
 # Add words from provided 'words.txt'
-all_words = File.read("words.txt").split(/\n/)
+all_words = File.read("words.txt").gsub(/\s+/, "\n").split(/\n/)
 non_letter_words = all_words.select { |word| word.length > 1 }
 flat_set = non_letter_words.map { |x| [x, 0] }.flatten
 redis.hmset("words", *flat_set)
