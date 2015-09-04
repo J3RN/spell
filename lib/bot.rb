@@ -65,8 +65,8 @@ $bot = Cinch::Bot.new do
   end
 
   on :message, /^!!annoying/ do |m|
-    if master? m.user
-      @annoying_mode = true
+    if master?(m.user) && m.channel?
+      annoy(m.channel)
       m.reply "Now being annoying"
     else
       m.reply "How about you shut up?"
@@ -74,8 +74,8 @@ $bot = Cinch::Bot.new do
   end
 
   on :message, /^!!stop/ do |m|
-    if master? m.user
-      @annoying_mode = false
+    if master?(m.user) && m.channel
+      unannoy(m.channel)
       m.reply "Alright, OK."
     else
       m.reply "How about you stop being annoying, eh?"
@@ -104,7 +104,7 @@ $bot = Cinch::Bot.new do
   end
 
   on :message, /(.*)/ do |m, sentence|
-    if @annoying_mode
+    if m.channel && annoying?(m.channel)
       unless sentence.match(/^spell:/)
         new_sentence = corrected_sentence(sentence, get_nicks(m))
 
@@ -122,6 +122,20 @@ $bot = Cinch::Bot.new do
   end
 
   helpers do
+    def annoy(channel)
+      @annoyed = {} unless @annoyed
+      @annoyed[channel] = true
+    end
+
+    def unannoy(channel)
+      @annoyed = {} unless @annoyed
+      @annoyed[channel] = false
+    end
+
+    def annoying?(channel)
+      @annoyed = {} unless @annoyed
+      @annoyed[channel] || false
+    end
 
     def master?(user)
       $masters.include? user.nick.downcase
