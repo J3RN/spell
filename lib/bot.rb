@@ -3,8 +3,9 @@ require "cinch"
 require "spell"
 require_relative "persistent_hash"
 
-$word_list = PersistentHash.new
-$spell = Spell::Spell.new($word_list)
+$word_list  = PersistentHash.new
+$annoyed    = PersistentHash.new("annoyed")
+$spell      = Spell::Spell.new($word_list)
 
 $bot = Cinch::Bot.new do
   configure do |c|
@@ -123,18 +124,15 @@ $bot = Cinch::Bot.new do
 
   helpers do
     def annoy(channel)
-      @annoyed = {} unless @annoyed
-      @annoyed[channel] = true
+      $annoyed[channel] = true
     end
 
     def unannoy(channel)
-      @annoyed = {} unless @annoyed
-      @annoyed[channel] = false
+      $annoyed[channel] = false
     end
 
     def annoying?(channel)
-      @annoyed = {} unless @annoyed
-      @annoyed[channel] || false
+      $annoyed[channel] || false
     end
 
     def master?(user)
